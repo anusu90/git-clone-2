@@ -21,6 +21,7 @@ const octokit = new Octokit({ auth: myGitKey });
 (<HTMLFormElement>document.getElementById('myForm')).addEventListener("submit", (e) => {
     e.preventDefault();
     let query = (<HTMLInputElement>document.getElementById('query')).value;
+    console.log(query)
     MyFunc(query);
 })
 
@@ -58,6 +59,8 @@ async function userlistAllRepos(user:any) {
     const userAllRepoListReq = await fetch(`https://api.github.com/users/${user.login}/repos`);
     const userAllRepoListResponse = await userAllRepoListReq.json();
     console.log(userAllRepoListResponse)
+
+    DisplayUserRepos(user, userAllRepoListResponse );
     
 }
 
@@ -88,5 +91,27 @@ function DisplayUser(user:any) {
         
         userlistAllRepos(user);
     })
+
+}
+
+function DisplayUserRepos(user,userAllRepoListResponse){
+
+    userAllRepoListResponse.forEach ((repo) => {
+
+        let card = document.createElement('div');
+        card.classList.add('card', 'shadow-sm', "p-3" ,"mb-5", "bg-white" ,"rounded")
+
+        let inHTMLforCards =  `<div class="card-header"> ${repo.name} </div>` +
+            `<div class="card-body">` +
+            `<h5 class="card-title"> ${repo.full_name}</h5>` +
+            `<p class="card-text">Language: ${repo.language}. Created at: ${repo.created_at}</p>` +
+            ` <a href="#" class="btn btn-info" id ="${repo.name}-list">List Files</a> <a href="${repo.html_url}" target="_blank" class="btn btn-dark">Go to Repo</a>` +
+            `</div>`;
+        
+        card.innerHTML = inHTMLforCards;
+        (<HTMLElement>document.getElementById('display-col')).append(card)
+
+    })
+
 
 }
