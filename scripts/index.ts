@@ -81,7 +81,7 @@ function DisplayUserRepos(user,userAllRepoListResponse){
     userAllRepoListResponse.forEach ((repo) => {
 
         let card = document.createElement('div');
-        card.classList.add('card', 'shadow-sm', "p-3" ,"mb-5", "bg-white" ,"rounded")
+        card.classList.add('card', 'shadow-sm', "p-3" ,"mb-5", "bg-white" ,"rounded", "repo-card")
 
         let inHTMLforCards =  `<div class="card-header"> ${repo.name} </div>` +
             `<div class="card-body">` +
