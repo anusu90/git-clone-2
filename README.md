@@ -10,7 +10,7 @@
 
 **Things to note**
 
-- Webpack generates ```main.js``` in the ```scripts``` folder. But that file has not been pushed to GitHub. This is done to that we can used netlify's build command to compile main.js while deploying. Since ```Typescript``` is used, the relevant files can be seen in scripts directory. *Note the ```scripts``` from ``` package.json ```*
+- Webpack generates ```main.js``` in the ```scripts``` folder. But that file has not been pushed to GitHub. This is done to that we can use netlify's build command to compile main.js while deploying. Since ```Typescript``` is used, the relevant files can be seen in scripts directory. *Note the ```scripts``` from ``` package.json ```*
 
 ```
 "scripts": {

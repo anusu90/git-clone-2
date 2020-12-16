@@ -1,7 +1,7 @@
 .first-container{
     background: rgb(22,37,77);
     background: linear-gradient(164deg, rgba(22,37,77,1) 0%, rgba(5,13,34,1) 88%, rgba(189,92,44,1) 100%); 
-    min-height: 95vh;
+    min-height: 100vh;
 }
 
 .nav-row{
@@ -95,13 +95,27 @@
 }
  */
 
+
+
 .my-image{
     margin-top: 15px;
     border-radius: 50%;
-    height: 75%;
-    width: 75%;
+    height: 80%;
+    width: 80%;
     clip-path: circle();
     /* visibility: hidden; */
+    animation: rotateEarth 18s linear infinite;
+}
+
+@keyframes rotateEarth{
+    from{
+
+        transform: rotateZ(0deg);
+    }
+
+    to{
+        transform: rotateZ(360deg);
+    }
 }
 
 .user-card{
