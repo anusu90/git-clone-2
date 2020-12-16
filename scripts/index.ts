@@ -171,6 +171,8 @@ function DisplayRepos(repoResp){
 
     repoResp.items.forEach ((repo) => {
 
+        (<HTMLElement>document.getElementById('display-col')).innerHTML= "";
+
         let card = document.createElement('div');
         card.classList.add('card', 'shadow-sm', "p-3" ,"mb-5", "bg-white" ,"rounded", "repo-card")
 
