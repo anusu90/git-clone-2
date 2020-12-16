@@ -8,8 +8,16 @@ const octokit = new Octokit({ auth: myGitKey }); //IGNORE
 (<HTMLFormElement>document.getElementById('myForm')).addEventListener("submit", (e) => {
     e.preventDefault(); //PREVENT DEFAULT TO STOP FORM FROM SUBMITTING
     let query = (<HTMLInputElement>document.getElementById('query')).value;
-    console.log(query)
-    searchGithubUser(query); // CALL THE FUNCTION TO SEARCH THE USER THROUGH API FOR THE GIVEN QUERY
+    let select = (<HTMLInputElement>document.getElementById('inlineFormCustomSelect')).value;
+    console.log(select);
+    if (select === 'user'){
+
+        searchGithubUser(query); // CALL THE FUNCTION TO SEARCH THE USER THROUGH API FOR THE GIVEN QUERY
+    } else if (select === 'repo'){
+
+        searchGitRepo(query);
+        console.log("we will search for repo")
+    }
 })
 
 
@@ -137,8 +145,56 @@ async function displayRepoFileList(repo,e) {
         e.target.innerHTML = "List Files"
 
     }
-
     
+}
+
+// SETTING UP SEARCHING FOR REPOS
+
+async function searchGitRepo(query:string) {
+
+    let url = "https://api.github.com/search/repositories?q="+query
+    console.log(url);
+
+    let repoReq = await fetch(url);
+    let repoResp = await repoReq.json();
+    console.log(repoResp);
+    if(repoResp.total_count > 0){
+
+        DisplayRepos(repoResp);
+    } else {
+        ShowAlert();
+    }
+    
+}
+
+function DisplayRepos(repoResp){
+
+    repoResp.items.forEach ((repo) => {
+
+        let card = document.createElement('div');
+        card.classList.add('card', 'shadow-sm', "p-3" ,"mb-5", "bg-white" ,"rounded", "repo-card")
+
+        let inHTMLforCards =  `<div class="card-header repo-header"> ${repo.name} </div>` +
+            `<div class="card-body">` +
+            `<h5 class="card-title"> ${repo.full_name}</h5>` +
+            `<p class="card-text">Language: ${repo.language}.      Created on: ${String(repo.created_at).slice(0,10)}</p>` +
+            `<div class="file-list" id="${repo.full_name}-file-list"></div>`+
+            ` <button class="btn btn-info" id ="${repo.id}-list">List Files</button> <a href="${repo.html_url}" target="_blank" class="btn btn-dark">Go to Repo</a>` +
+            `</div>`;
+
+        // IN THE ABOVE HTML WE HAVE CREATED A BUTTON TO LIST THE FILES PRESENT IN THAT REPO
+        // TO THAT BUTTON WE ATTACK EVENTLISTENER
+        
+        card.innerHTML = inHTMLforCards;
+        (<HTMLElement>document.getElementById('display-col')).append(card); //WE ARE DISPLAYING THE REPOS THROUGH BOOTSTRAP CARDS
+
+        (<HTMLElement>document.getElementById(`${repo.id}-list`)).addEventListener('click', (e)=> {
+            displayRepoFileList(repo,e); //EVEN LISTENER WILL CALL THIS FUNCTION TO SHOW THE REPO LIST
+        })
+
+    })
+
+
 }
 
 
@@ -159,3 +215,4 @@ function HideAlert() {
     alert.style.display = 'none'
 
 }
+
