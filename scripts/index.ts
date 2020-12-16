@@ -25,7 +25,7 @@ async function searchGithubUser (query:string){
     } else {
 
         console.log('the status code is ',request.status);
-        alert ("No such user found. Please try again.");
+        ShowAlert();
     }
 }
 
@@ -139,4 +139,23 @@ async function displayRepoFileList(repo,e) {
     }
 
     
+}
+
+
+// SETTING UP ALERT
+
+(<HTMLButtonElement>document.getElementById("try-again")).addEventListener("click", ()=>{
+    HideAlert();
+})
+
+function ShowAlert () {
+    let alert = document.getElementById('myAlert');
+    alert.style.display = 'initial'
+}
+
+function HideAlert() {
+
+    let alert = document.getElementById('myAlert');
+    alert.style.display = 'none'
+
 }
