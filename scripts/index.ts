@@ -1,37 +1,92 @@
-const { Octokit } = require("@octokit/core");
-
-// require('dotenv').config()
-// rajavasanthan@guvi.in
-// async function searchGithub (){
-
-//     const url = "https://api.github.com";
+// async function searchGithubUser (query:string){
+//     const url = "https://api.github.com/users/"+query;
 //     const request = await fetch(url);
 //     const response = await request.json();
-
 //     console.log(response);
 // }
 
-// searchGithub ();
 
 
+
+
+
+
+
+
+
+const { Octokit } = require("@octokit/core");
 let {myGitKey} = process.env;
-console.log(myGitKey);
-async function MyFunc (){
+const octokit = new Octokit({ auth: myGitKey });
+
+(<HTMLFormElement>document.getElementById('myForm')).addEventListener("submit", (e) => {
+    e.preventDefault();
+    let query = (<HTMLInputElement>document.getElementById('query')).value;
+    MyFunc(query);
+})
+
+
+
+async function MyFunc (query:string){
     try {
-        const octokit = new Octokit({ auth: myGitKey });
         const response = await octokit.request('GET /users/{user}',{
-            user: 'anusu900uy',
+            user: query,
         });
+        DisplayUser(response.data);
+        console.log(response.data)
         
     } catch (error) {
-        
-        const octokit = new Octokit({ auth: myGitKey });
-        const res2 = await octokit.request('GET /search/code', {
-            q: 'guvi',
+
+        alert("no user by that name searching repositories")        
+        const res2 = await octokit.request('GET /search/repositories', {
+            q: query,
         });
         console.log(res2.data)   
     }
-
 }
 
-MyFunc();
+async function GetRepoContent (){
+    const responseForRepo =  await octokit.request('GET /repos/{owner}/{repo}/contents/', {
+        owner: 'anusu90',
+        repo: '100-PYTHON-PROJECTS',
+      })
+}
+
+
+async function userlistAllRepos(user:any) {
+
+    console.log(user);
+    const userAllRepoListReq = await fetch(`https://api.github.com/users/${user.login}/repos`);
+    const userAllRepoListResponse = await userAllRepoListReq.json();
+    console.log(userAllRepoListResponse)
+    
+}
+
+
+GetRepoContent();
+
+function DisplayUser(user:any) {
+
+    let inHTML = `<div class="card mb-3 w-100 user-card shadow p-3 mb-5 bg-white rounded">` +
+        `  <div class="row no-gutters">` +
+        ` <div class="col-md-4">` +
+        `  <img src="${user.avatar_url}" class="card-img" alt="...">` +
+        `   </div>` +
+        `  <div class="col-md-8">` +
+        ` <div class="card-body">` +
+        `  <h5 class="card-title">${user.name}</h5>` +
+        ` <p class="card-text">BIO: ${user.bio} </p>` +
+        `<p class="card-text"><small class="text-muted">Login: ${user.login}. Total Public Repos: ${user.public_repos}</small></p>` +
+        `<a href="${user.html_url}" target="_blank"><button class=" btn btn-primary">GitHub Profile</button></a> <button class=" btn btn-success" id= "${user.name}-btn">See Repositories</button>`+
+        ` </div>` +
+        `   </div>` +
+        `  </div>` +
+        `</div>`;
+
+    (<HTMLElement>document.getElementById('display-col')).innerHTML = inHTML;
+
+    (<HTMLButtonElement>document.getElementById(`${user.name}-btn`)).addEventListener(('click'), () => {
+        
+        userlistAllRepos(user);
+    })
+
+}
