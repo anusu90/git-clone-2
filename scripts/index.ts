@@ -1,9 +1,3 @@
-// async function searchGithubUser (query:string){
-//     const url = "https://api.github.com/users/"+query;
-//     const request = await fetch(url);
-//     const response = await request.json();
-//     console.log(response);
-// }
 
 
 
@@ -22,36 +16,53 @@ const octokit = new Octokit({ auth: myGitKey });
     e.preventDefault();
     let query = (<HTMLInputElement>document.getElementById('query')).value;
     console.log(query)
-    MyFunc(query);
+    searchGithubUser(query);
 })
 
 
+async function searchGithubUser (query:string){
 
-async function MyFunc (query:string){
-    try {
-        const response = await octokit.request('GET /users/{user}',{
-            user: query,
-        });
-        DisplayUser(response.data);
-        console.log(response.data)
-        
+    try {        
+        const url = "https://api.github.com/users/"+query;
+        const request = await fetch(url);
+        const user = await request.json();
+        console.log(user);
+        DisplayUser(user);
+
     } catch (error) {
 
-        alert("no user by that name searching repositories")        
-        const res2 = await octokit.request('GET /search/repositories', {
-            q: query,
-        });
-        console.log(res2.data)   
+        console.log(error);
+        
     }
 }
 
-async function GetRepoContent (){
-    const responseForRepo =  await octokit.request('GET /repos/{owner}/{repo}/contents/', {
-        owner: 'anusu90',
-        repo: '100-PYTHON-PROJECTS',
-      })
-}
+// async function MyFunc (query:string){
+//     try {
+//         const response = await octokit.request('GET /users/{user}',{
+//             user: query,
+//         });
+//         DisplayUser(response.data);
+//         console.log(response.data)
+        
+//     } catch (error) {
 
+//         alert("no user by that name searching repositories")   
+//         const     
+//         const res2 = await octokit.request('GET /search/repositories', {
+//             q: query,
+//         });
+//         console.log(res2.data)   
+//     }
+// }
+
+// async function GetRepoContent (){
+//     const responseForRepo =  await octokit.request('GET /repos/{owner}/{repo}/contents/', {
+//         owner: 'anusu90',
+//         repo: '100-PYTHON-PROJECTS',
+//       })
+// }
+
+// GetRepoContent();
 
 async function userlistAllRepos(user:any) {
 
@@ -65,7 +76,6 @@ async function userlistAllRepos(user:any) {
 }
 
 
-GetRepoContent();
 
 function DisplayUser(user:any) {
 
