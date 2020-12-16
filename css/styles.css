@@ -104,6 +104,15 @@
     /* visibility: hidden; */
 }
 
+.user-card{
+    background: linear-gradient(90deg, #FC466B 0%, #3F5EFB 100%);
+    color: whitesmoke;
+}
+
+.repo-card{
+    background: linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%);
+}
+
 
 
 
