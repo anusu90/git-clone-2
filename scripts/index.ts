@@ -1,72 +1,35 @@
+const { Octokit } = require("@octokit/core"); // KINDLY IGNORE THE FIRST THREE LINES
+let {myGitKey} = process.env; //IGNORE
+const octokit = new Octokit({ auth: myGitKey }); //IGNORE
 
 
-
-
-
-
-
-
-
-
-const { Octokit } = require("@octokit/core");
-let {myGitKey} = process.env;
-const octokit = new Octokit({ auth: myGitKey });
+//FIRST WE LISTEN TO TO THE SUBMIT OF INPUT IN THE NAVBAR. THIS WOULD GIVE US OUR SEARCH QUERY
 
 (<HTMLFormElement>document.getElementById('myForm')).addEventListener("submit", (e) => {
-    e.preventDefault();
+    e.preventDefault(); //PREVENT DEFAULT TO STOP FORM FROM SUBMITTING
     let query = (<HTMLInputElement>document.getElementById('query')).value;
     console.log(query)
-    searchGithubUser(query);
+    searchGithubUser(query); // CALL THE FUNCTION TO SEARCH THE USER THROUGH API FOR THE GIVEN QUERY
 })
 
 
+// FUNCTION TO SEARCH FOR USER
+
 async function searchGithubUser (query:string){
 
-    try {        
-        const url = "https://api.github.com/users/"+query;
-        const request = await fetch(url);
+    const url = "https://api.github.com/users/"+query;
+    const request = await fetch(url);
+    if (request.status >= 200 && request.status <=299){ //THIS SHOWS IF THE REQUEST IS SUCCESSFUL SHOWING THAT WE FOUND THE USER
         const user = await request.json();
-        console.log(user);
-        DisplayUser(user);
+        DisplayUser(user);                              // DisplayUSer Function is called for DOM
+    } else {
 
-    } catch (error) {
-
-        const url = `https://api.github.com/search/repositories?q=${query}{&page,per_page,sort,order}`
-        const request = await fetch(url);
-        const searchedRepos = await request.json()
-
-        console.log(searchedRepos);
-        
+        console.log('the status code is ',request.status);
+        alert ("No such user found. Please try again.");
     }
 }
 
-// async function MyFunc (query:string){
-//     try {
-//         const response = await octokit.request('GET /users/{user}',{
-//             user: query,
-//         });
-//         DisplayUser(response.data);
-//         console.log(response.data)
-        
-//     } catch (error) {
-
-//         alert("no user by that name searching repositories")   
-//         const     
-//         const res2 = await octokit.request('GET /search/repositories', {
-//             q: query,
-//         });
-//         console.log(res2.data)   
-//     }
-// }
-
-// async function GetRepoContent (){
-//     const responseForRepo =  await octokit.request('GET /repos/{owner}/{repo}/contents/', {
-//         owner: 'anusu90',
-//         repo: '100-PYTHON-PROJECTS',
-//       })
-// }
-
-// GetRepoContent();
+// FUNCTION FOR DISPLAYING ALL THE REPOS OF THE USER
 
 async function userlistAllRepos(user:any) {
 
@@ -75,11 +38,11 @@ async function userlistAllRepos(user:any) {
     const userAllRepoListResponse = await userAllRepoListReq.json();
     console.log(userAllRepoListResponse)
 
-    DisplayUserRepos(user, userAllRepoListResponse );
+    DisplayUserRepos(user, userAllRepoListResponse ); // THIS FUNCTION IS CALLED AGAIN FOR DOM TO DISPLAY REPOS
     
 }
 
-
+//THIS FUNCTION PERFORMS DOM AND PRESENTS US WITH THE USER IN FORM OF BOOTSTRAP CARD
 
 function DisplayUser(user:any) {
 
@@ -99,14 +62,19 @@ function DisplayUser(user:any) {
         `  </div>` +
         `</div>`;
 
+    //THE ABOVE HTML TEXT ALSO CREATES 2 BUTTONS ONE TO GO TO THE USER'S GITHUB PROFILE AND ANOTHER TO LIST THE REPOS
+    // THE REPO LISTING FUNCTION HAS ALREADY BEING DEFINED
+
     (<HTMLElement>document.getElementById('display-col')).innerHTML = inHTML;
 
     (<HTMLButtonElement>document.getElementById(`${user.name}-btn`)).addEventListener(('click'), () => {
         
-        userlistAllRepos(user);
+        userlistAllRepos(user);  // WE HAVE ADDED AN EVENT LISTENER ON THE BUTTON TO SHOW THE REPOS
     })
 
 }
+
+//FOLLOWING FUNCTION DOES DOM TO SHOW ALL THE REPOS OF THE USER
 
 function DisplayUserRepos(user,userAllRepoListResponse){
 
@@ -119,13 +87,44 @@ function DisplayUserRepos(user,userAllRepoListResponse){
             `<div class="card-body">` +
             `<h5 class="card-title"> ${repo.full_name}</h5>` +
             `<p class="card-text">Language: ${repo.language}. Created at: ${repo.created_at}</p>` +
-            ` <a href="#" class="btn btn-info" id ="${repo.name}-list">List Files</a> <a href="${repo.html_url}" target="_blank" class="btn btn-dark">Go to Repo</a>` +
+            `<div class="file-list" id="${repo.full_name}-file-list"></div>`+
+            ` <button class="btn btn-info" id ="${repo.name}-list">List Files</button> <a href="${repo.html_url}" target="_blank" class="btn btn-dark">Go to Repo</a>` +
             `</div>`;
+
+        // IN THE ABOVE HTML WE HAVE CREATED A BUTTON TO LIST THE FILES PRESENT IN THAT REPO
+        // TO THAT BUTTON WE ATTACK EVENTLISTENER
         
         card.innerHTML = inHTMLforCards;
-        (<HTMLElement>document.getElementById('display-col')).append(card)
+        (<HTMLElement>document.getElementById('display-col')).append(card); //WE ARE DISPLAYING THE REPOS THROUGH BOOTSTRAP CARDS
+
+        (<HTMLElement>document.getElementById(`${repo.name}-list`)).addEventListener('click', ()=> {
+            displayRepoFileList(repo); //EVEN LISTENER WILL CALL THIS FUNCTION TO SHOW THE REPO LIST
+        })
 
     })
 
 
+}
+
+// FOLLOWING FUNCTION FETCHES INFORMATION FROM API AND DOES DOM TO SHOW THE FILE LIST OF PARTICULAR REPO OF A USER
+// IT IS DONE THROUGH BY APPENDING A NEW DIV TO THE CARD OF REPOS
+
+async function displayRepoFileList(repo) {
+
+    let url = repo.contents_url;
+    let n = url.length
+    let newUrl = url.slice(0,n-7)
+
+    let requestForRepoFiles = await fetch(newUrl);
+    let responseForRepoFiles = await requestForRepoFiles.json();
+    let fileListDisplayDiv = (<HTMLElement>document.getElementById(`${repo.full_name}-file-list`))
+
+    // console.log(responseForRepoFiles)
+
+    responseForRepoFiles.forEach(file => {
+        let pTagforFile = document.createElement('p');
+        pTagforFile.innerHTML = file.name;
+        fileListDisplayDiv.append(pTagforFile);
+    });
+    
 }
