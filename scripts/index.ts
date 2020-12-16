@@ -55,7 +55,7 @@ function DisplayUser(user:any) {
         ` <div class="card-body">` +
         `  <h5 class="card-title">${user.name}</h5>` +
         ` <p class="card-text">BIO: ${user.bio} </p>` +
-        `<p class="card-text"><small class="text-muted">Login: ${user.login}. Total Public Repos: ${user.public_repos}</small></p>` +
+        `<p class="card-text"><small class="my-muted-text">Login: ${user.login}. Total Public Repos: ${user.public_repos}</small></p>` +
         `<a href="${user.html_url}" target="_blank"><button class=" btn btn-primary">GitHub Profile</button></a> <button class=" btn btn-success" id= "${user.name}-btn">See Repositories</button>`+
         ` </div>` +
         `   </div>` +
@@ -83,7 +83,7 @@ function DisplayUserRepos(user,userAllRepoListResponse){
         let card = document.createElement('div');
         card.classList.add('card', 'shadow-sm', "p-3" ,"mb-5", "bg-white" ,"rounded", "repo-card")
 
-        let inHTMLforCards =  `<div class="card-header"> ${repo.name} </div>` +
+        let inHTMLforCards =  `<div class="card-header repo-header"> ${repo.name} </div>` +
             `<div class="card-body">` +
             `<h5 class="card-title"> ${repo.full_name}</h5>` +
             `<p class="card-text">Language: ${repo.language}.      Created on: ${String(repo.created_at).slice(0,10)}</p>` +

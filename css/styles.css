@@ -7,10 +7,7 @@
 .nav-row{
     height: 10%;
 }
-/* 
-.header-row{
-    height: 70%;
-} */
+
 
 .intro-text{
     color: whitesmoke;
@@ -48,53 +45,6 @@
     border: solid 0.5px #72A0C1;
 }
 
-/* 
-.logo{
-    display: inline-block;
-    margin: 8px auto;;
-}
-
-.Nav-Links{
-    display: inline-block;
-    margin: 8px auto;;
-}
-
-.Nav-Links li{
-    display: inline-block;
-    margin-left: 10px;
-}
-
-.Nav-Links li a{
-    text-decoration: none;
-    color: white;
-}
-
-.Nav-Links input{
-    display: inline-block;
-    border-radius: 5px;
-    border: transparent;
-    background-color: lightslategray;
-    color: whitesmoke;
-    font-size: 14px;
-    height: 28px;
-}
-
-.ul-right{
-    float: right;
-    height: 40px;
-}
-
-
-.ul-left{
-    float:left;
-    height: 40px;
-}
-
-.dropdown-menu a{
-    color: black;
-}
- */
-
 
 
 .my-image{
@@ -105,6 +55,7 @@
     clip-path: circle();
     /* visibility: hidden; */
     animation: rotateEarth 18s linear infinite;
+    transition: animation-play-state 0.5s;
 }
 
 @keyframes rotateEarth{
@@ -120,11 +71,16 @@
 
 .user-card{
     background: linear-gradient(90deg, #FC466B 0%, #3F5EFB 100%);
-    color: whitesmoke;
+    color: #ffffff;
+    font-family: 'Roboto', sans-serif;
 }
 
 .repo-card{
     background: linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%);
+}
+
+.repo-header{
+    font-size: 20px;
 }
 
 
