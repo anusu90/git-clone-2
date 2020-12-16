@@ -31,7 +31,11 @@ async function searchGithubUser (query:string){
 
     } catch (error) {
 
-        console.log(error);
+        const url = `https://api.github.com/search/repositories?q=${query}{&page,per_page,sort,order}`
+        const request = await fetch(url);
+        const searchedRepos = await request.json()
+
+        console.log(searchedRepos);
         
     }
 }
