@@ -86,7 +86,7 @@ function DisplayUserRepos(user,userAllRepoListResponse){
         let inHTMLforCards =  `<div class="card-header"> ${repo.name} </div>` +
             `<div class="card-body">` +
             `<h5 class="card-title"> ${repo.full_name}</h5>` +
-            `<p class="card-text">Language: ${repo.language}. Created at: ${repo.created_at}</p>` +
+            `<p class="card-text">Language: ${repo.language}.      Created on: ${String(repo.created_at).slice(0,10)}</p>` +
             `<div class="file-list" id="${repo.full_name}-file-list"></div>`+
             ` <button class="btn btn-info" id ="${repo.name}-list">List Files</button> <a href="${repo.html_url}" target="_blank" class="btn btn-dark">Go to Repo</a>` +
             `</div>`;
@@ -97,8 +97,8 @@ function DisplayUserRepos(user,userAllRepoListResponse){
         card.innerHTML = inHTMLforCards;
         (<HTMLElement>document.getElementById('display-col')).append(card); //WE ARE DISPLAYING THE REPOS THROUGH BOOTSTRAP CARDS
 
-        (<HTMLElement>document.getElementById(`${repo.name}-list`)).addEventListener('click', ()=> {
-            displayRepoFileList(repo); //EVEN LISTENER WILL CALL THIS FUNCTION TO SHOW THE REPO LIST
+        (<HTMLElement>document.getElementById(`${repo.name}-list`)).addEventListener('click', (e)=> {
+            displayRepoFileList(repo,e); //EVEN LISTENER WILL CALL THIS FUNCTION TO SHOW THE REPO LIST
         })
 
     })
@@ -109,22 +109,34 @@ function DisplayUserRepos(user,userAllRepoListResponse){
 // FOLLOWING FUNCTION FETCHES INFORMATION FROM API AND DOES DOM TO SHOW THE FILE LIST OF PARTICULAR REPO OF A USER
 // IT IS DONE THROUGH BY APPENDING A NEW DIV TO THE CARD OF REPOS
 
-async function displayRepoFileList(repo) {
+async function displayRepoFileList(repo,e) {
 
-    let url = repo.contents_url;
-    let n = url.length
-    let newUrl = url.slice(0,n-7)
+    if(e.target.innerHTML === 'List Files'){
 
-    let requestForRepoFiles = await fetch(newUrl);
-    let responseForRepoFiles = await requestForRepoFiles.json();
-    let fileListDisplayDiv = (<HTMLElement>document.getElementById(`${repo.full_name}-file-list`))
+        e.target.innerHTML = "Collapse Files"
 
-    // console.log(responseForRepoFiles)
+        let url = repo.contents_url;
+        let n = url.length
+        let newUrl = url.slice(0,n-7)
+    
+        let requestForRepoFiles = await fetch(newUrl);
+        let responseForRepoFiles = await requestForRepoFiles.json();
+        let fileListDisplayDiv = (<HTMLElement>document.getElementById(`${repo.full_name}-file-list`))
+    
+        // console.log(responseForRepoFiles)
+    
+        responseForRepoFiles.forEach(file => {
+            let pTagforFile = document.createElement('p');
+            pTagforFile.innerHTML = file.name;
+            fileListDisplayDiv.append(pTagforFile);
+        });
+    } else {
 
-    responseForRepoFiles.forEach(file => {
-        let pTagforFile = document.createElement('p');
-        pTagforFile.innerHTML = file.name;
-        fileListDisplayDiv.append(pTagforFile);
-    });
+        let fileListDisplayDiv = (<HTMLElement>document.getElementById(`${repo.full_name}-file-list`));
+        fileListDisplayDiv.innerHTML ="";
+        e.target.innerHTML = "List Files"
+
+    }
+
     
 }
